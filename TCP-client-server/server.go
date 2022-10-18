@@ -7,6 +7,7 @@ import (
 )
 
 const BUFFER_SIZE = 8192
+var clients []net.Conn
 
 func main() {
 	args := os.Args[1:]
@@ -18,12 +19,15 @@ func main() {
 	defer con.Close()
 	fmt.Printf("Server started on %s ...\n\n", con.Addr())
 
+	go serverRoutine()
+
 	for {
 		conn, err := con.Accept()
 		if err != nil {
 			panic(err)
 		}
 
+		clients = append(clients, conn)
 		go clientHandler(conn)
 	}
 }
@@ -50,4 +54,19 @@ func clientHandler(conn net.Conn) {
 	}
 
 	fmt.Println("Client", conn.RemoteAddr(), "disconnected")
+}
+
+func serverRoutine() {
+	var command string
+	fmt.Scanf("%s", &command)
+
+	if command == "down" {
+		for _, conn := range clients {
+			conn.Write([]byte("bye"))
+			conn.Close()
+		}
+
+		fmt.Println("\n\nServer stopped ...")
+		os.Exit(0)
+	}
 }
