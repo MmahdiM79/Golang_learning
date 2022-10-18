@@ -17,7 +17,12 @@ func main() {
 
 
 	var msg string
-	fmt.Scanf("%s", &msg)
+	for {
+		fmt.Scanf("%s", &msg)
+		if msg == "bye" {
+			break
+		}
 
-	conn.Write([]byte(msg))
+		conn.Write([]byte(msg))
+	}
 }
