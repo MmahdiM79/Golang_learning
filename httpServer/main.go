@@ -9,10 +9,11 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", getRoot)
-	http.HandleFunc("/hello", getHello)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", getRoot)
+	mux.HandleFunc("/hello", getHello)
 
-	err := http.ListenAndServe("127.0.0.1:8080", nil)
+	err := http.ListenAndServe("127.0.0.1:8080", mux)
 	if errors.Is(err, http.ErrServerClosed) {
 		fmt.Println("Server closed")
 	} else if err != nil {
